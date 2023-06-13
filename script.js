@@ -65,5 +65,61 @@ var Game = {
       Pong.listen();
    },
 
+   endGameMenu: function (text) {
+      // This changes the canvas color and font size
+      Pong.context.font = '45px Courier New';
+      Pong.context.fillStyle = this.color;
+
+      // Creates the rectangular background, behind the start button
+      Pong.context.fillReact(
+         Pong.canvas.width / 2 - 350,
+         Pong.canvas.height / 2 - 48,
+         700,
+         100
+      );
+
+      // Change canvas color
+      Pong.context.fillStyle = '#ffffff';
+
+      // End Game menu
+      Pong.context.fillText(text,
+         Pong.canvas.width / 2,
+         Pong.canvas.height / 2 + 15
+     );
+
+     setTimeout(function () {
+      Pong = Object.assign({}, Game);
+      Pong.initialize();
+     }, 3000);
+   },
+
+   menu: function () {
+      // Draw Pong objects in their current state
+      Pong.draw();
+
+      // Change the font size and color
+      this.context.font = '50px Courier New';
+      this.context.fillStyle = this.color;
+
+      // Draw the rectangle behind the 'Press any key to begin' text
+      this.context.fillRect(
+         this.canvas.width /  2 - 350,
+         this.canvas.height / 2 - 48,
+         700,
+         100
+      );
+
+      // Change the canvas color;
+      this.context.fillStyle = "#ffffff";
+
+      // Draw the 'press any key to begin' text
+      this.context.fillText('Press any key to begin',
+         this.canvas.width / 2,
+         this.canvas.height / 2 + 15
+         );
+   },
+
+   // Update all objects
+   
    
 };
