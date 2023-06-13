@@ -120,6 +120,36 @@ var Game = {
    },
 
    // Update all objects
-   
+   update: function () {
+      if (!this.over) {
+         // If the ball collides with the bound limits - correct the x and y coords.
+         if (this.ball.x <= 0) Pong._resetTurn.call(this, this.ai, this.player);
+         if (this.ball.x >= this.canvas.width - this.ball.width) Pong._resetTurn.call(this, this.player, this.ai);
+         if (this.ball.y <= 0) this.ball.moveY = DIRECTION.DOWN;
+         if (this.ball.y >= this.canvas.height - this.ball.height) this.ball.moveY = DIRECTION.UP;
+
+         // Move the player if the player.move value is updated by an input event
+         if (this.player.move === DIRECTION.UP) this.player.y -= this.player.speed;
+         else if  (this.player.move === DIRECTION.DOWN) this.player.y += this.player.speed;
+
+         // On new serve (start of each turn) move the ball to the proper side and randomize the direction to make it challenging.
+         if (Pong._turnDelayIsOver.call(this) && this.turn) {
+            this.ball.moveX = this.turn === this.player ? DIRECTION.LEFT : DIRECTION.RIGHT;
+            this.ball.moveY = [DIRECTION.UP, DIRECTION.DOWN][Math.round(Math.random())];
+            this.ball.y = Math.floor(Math.random() * this.canvas.height - 200) + 200;
+            this.turn = null;
+         }
+
+         // If the player collides with the bound limits, update the coordinates for x and y.
+         if (this.player.y <= 0) this.player.y = 0;
+         else if (this.player.y >= (this.canvas.height - this.player.height)) this.player.y = (this.canvas.height - this.player.height);
+
+         // Move ball in intended direction based on moveY and moveX values
+         if(this.ball.moveY === DIRECTION.UP) this.ball.y -= (this.ball.speed / 1.5);
+         else if (this.ball.moveY === DIRECTION.DOWN) this.ball.y += (this.ball.speed / 1.5);
+         if (this.ball.moveX === DIRECTION.LEFT) this.ball.x -= this.ball.speed;
+         else if (this.ball.moveX === DIRECTION.RIGHT) this.balll.x += this.ball.speed;
+      }
+   },
    
 };
