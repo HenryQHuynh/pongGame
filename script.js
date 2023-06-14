@@ -149,7 +149,141 @@ var Game = {
          else if (this.ball.moveY === DIRECTION.DOWN) this.ball.y += (this.ball.speed / 1.5);
          if (this.ball.moveX === DIRECTION.LEFT) this.ball.x -= this.ball.speed;
          else if (this.ball.moveX === DIRECTION.RIGHT) this.balll.x += this.ball.speed;
+
+         // Handle ai UP and DOWN movement
+         if (this.ai.y > this.ball.y - (this.ai.height / 2)) {
+            if (this.ball.moveX === DIRECTION.RIGHT) this.ai.y -= this.ai.speed / 1.5;
+            else this.ai.y -= this.ai.speed / 4;
+         }
+         if (this.ai.y < this.ball.y - (this.ai.height / 2)) {
+            if (this.ball.moveX === DIRECTION.RIGHT) this.ai.y += this.ai.speed / 1.5;
+            else this.ai.x -= this.ai.speed / 4;
+         }
+
+         // Handle ai wall collisions
+         if (this.ai.y >= this.canvas.height - this.ai.height) this.ai.y = this.canvas.height -this.ai.height;
+         else if (this.ai.y <= 0) this.ai.y = 0;
+
+         // Handle Player-Ball collisions
+         if (this.ball.x - this.ball.width <= this.player.x && this.ball.x >= this.player.x - this.player.width) {
+            if (this.ball.y <= this.player.y + this.player.height && this.ball.y + this.ball.height >= this.player.y) {
+                this.ball.x = (this.player.x + this.ball.width);
+                this.ball.moveX = DIRECTION.RIGHT;
+
+            }
+         }
+
+         // Handle ai-ball collisions
+         if (this.ball.x - this.ball.width <= this.ai.x && this.ball.x >= this.ai.x - this.ai.width) {
+            if (this.ball.y <= this.ai.y + this.ai.height && this.ball.y + this.ball.height >= this.ai.y) {
+               this.ball.x = (this.ai.x - this.ball.width);
+               this.ball.moveX = DIRECTION.LEFT;
+            }
+         }
+      }
+   // Handle for the end of round transition.
+   // Check to see which player won the round.
+   if (this.player.score === rounds[this.round]) {
+      // Check to see if there are any more rounds left in the game and display the victory screen if there are not.
+      if(!rounds[this.round + 1]) {
+         this.over = true;
+         setTimeout(function() {Pong.endGameMenu('Winner!'); }, 1000);
+      } else {
+         // If there  is another round, game will reset all the values and increase the increment.
+         this.color = this.generateRoundColor();
+         this.player.score = this.ai.score = 0;
+         this.player.speed += 0.5;
+         this.ai.speed += 1;
+         this.ball.speed += 1;
+         this.round += 1;
+         }
+      }
+   // Check if the ai won the round.
+   else if (this.ai.score === rounds[this.round]) {
+      this.over = true;
+      setTimeout(function () { Pong.endGameMenu('Game Over, Man!'); }, 1000);
       }
    },
-   
-};
+
+   // Draw the objects on the canvas element
+   draw: function () {
+      // Clear the Canvas
+      this.context.clearRect(
+         0,
+         0,
+         this.canvas.width,
+         this.canvas.height
+      );
+
+      // Set fill style to black
+      this.context.fillStyle = this.color;
+
+      // Draw background
+      this.context.fillRect(
+         0,
+         0,
+         this.canvas.width,
+         this.canvas.height
+      );
+
+      // Set the fill style for the paddles and ball to white
+      this.context.fillStyle = '#ffffff';
+
+      // Draw the player
+      this.context.fillRect(
+         this.player.x,
+         this.player.y,
+         this.player.width,
+         this.player.height
+      );
+
+      // Draw the Ai
+      this.context.fillRect(
+         this.ai.x,
+         this.ai.y,
+         this.ai.width,
+         this.ai.height
+      );
+
+      // Draw the ball
+      if (Pong._turnDelayIsOver.call(this)) {
+         this.context.fillRect(
+            this.ball.x,
+            this.ball.y,
+            this.ball.width,
+            this.ball.height
+         );
+      }
+
+      // Draw the net
+      this.context.beginPath();
+      this.context.setLineDash([7,15]);
+      this.context.moveTo((this.canvas.width / 2), this.canvas.height -140);
+      this.context.lineTo((this.canvas.width / 2), 140);
+      this.context.lineWidth = 10;
+      this.context.strokeStyle = '#ffffff';
+      this.context.stroke();
+
+      // Set the default canvas font and align it to the center
+      this.context.font = '100px Courier New';
+      this.context.textAlign = 'center';
+
+      // Draw the players score (left) and ai score (right)
+      this.context.fillText(
+         this.player.score.toString(),
+         (this.canvas.width / 2) - 300,
+         200
+      );
+
+      this.context.fillText(
+         this.ai.score.toString(),
+         (this.canvas.width / 2) + 300,
+         200
+      );
+
+      // Change the font size of the center score text
+      
+
+
+   }
+}
