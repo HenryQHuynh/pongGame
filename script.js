@@ -145,10 +145,10 @@ var Game = {
          else if (this.player.y >= (this.canvas.height - this.player.height)) this.player.y = (this.canvas.height - this.player.height);
 
          // Move ball in intended direction based on moveY and moveX values
-         if(this.ball.moveY === DIRECTION.UP) this.ball.y -= (this.ball.speed / 1.5);
-         else if (this.ball.moveY === DIRECTION.DOWN) this.ball.y += (this.ball.speed / 1.5);
-         if (this.ball.moveX === DIRECTION.LEFT) this.ball.x -= this.ball.speed;
-         else if (this.ball.moveX === DIRECTION.RIGHT) this.balll.x += this.ball.speed;
+         if (this.ball.moveY === DIRECTION.UP) this.ball.y -= (this.ball.speed / 1.5);
+            else if (this.ball.moveY === DIRECTION.DOWN) this.ball.y += (this.ball.speed / 1.5);
+            if (this.ball.moveX === DIRECTION.LEFT) this.ball.x -= this.ball.speed;
+            else if (this.ball.moveX === DIRECTION.RIGHT) this.ball.x += this.ball.speed;
 
          // Handle ai UP and DOWN movement
          if (this.ai.y > this.ball.y - (this.ai.height / 2)) {
@@ -185,18 +185,18 @@ var Game = {
    // Check to see which player won the round.
    if (this.player.score === rounds[this.round]) {
       // Check to see if there are any more rounds left in the game and display the victory screen if there are not.
-      if(!rounds[this.round + 1]) {
-         this.over = true;
-         setTimeout(function() {Pong.endGameMenu('Winner!'); }, 1000);
-      } else {
-         // If there  is another round, game will reset all the values and increase the increment.
-         this.color = this.generateRoundColor();
-         this.player.score = this.ai.score = 0;
-         this.player.speed += 0.5;
-         this.ai.speed += 1;
-         this.ball.speed += 1;
-         this.round += 1;
-         }
+         if (!rounds[this.round + 1]) {
+            this.over = true;
+            setTimeout(function () { Pong.endGameMenu('Winner!'); }, 1000);
+            } else {
+                  // If there is another round, reset all the values and increment the round number.
+                  this.color = this._generateRoundColor();
+                  this.player.score = this.ai.score = 0;
+                  this.player.speed += 0.5;
+                  this.ai.speed += 1;
+                  this.ball.speed += 1;
+                  this.round += 1;
+            }
       }
    // Check if the ai won the round.
    else if (this.ai.score === rounds[this.round]) {
@@ -302,7 +302,7 @@ var Game = {
       );
    },
 
-   loop: function () {
+   loop: function() {
       Pong.update();
       Pong.draw();
 
