@@ -157,7 +157,7 @@ var Game = {
          }
          if (this.ai.y < this.ball.y - (this.ai.height / 2)) {
             if (this.ball.moveX === DIRECTION.RIGHT) this.ai.y += this.ai.speed / 1.5;
-            else this.ai.x -= this.ai.speed / 4;
+            else this.ai.y -= this.ai.speed / 4;
          }
 
          // Handle ai wall collisions
@@ -188,15 +188,15 @@ var Game = {
          if (!rounds[this.round + 1]) {
             this.over = true;
             setTimeout(function () { Pong.endGameMenu('Winner!'); }, 1000);
-            } else {
-                  // If there is another round, reset all the values and increment the round number.
-                  this.color = this._generateRoundColor();
-                  this.player.score = this.ai.score = 0;
-                  this.player.speed += 0.5;
-                  this.ai.speed += 1;
-                  this.ball.speed += 1;
-                  this.round += 1;
-            }
+         } else {
+               // If there is another round, reset all the values and increment the round number.
+               this.color = this._generateRoundColor();
+               this.player.score = this.ai.score = 0;
+               this.player.speed += 0.5;
+               this.ai.speed += 1;
+               this.ball.speed += 1;
+               this.round += 1;
+         }
       }
    // Check if the ai won the round.
    else if (this.ai.score === rounds[this.round]) {
