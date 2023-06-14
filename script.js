@@ -282,8 +282,35 @@ var Game = {
       );
 
       // Change the font size of the center score text
+      this.context.font = '30px Courier New';
+
+      // Draw the winning score
+      this.context.fillText(
+         'Round' + (Pong.round + 1),
+         (this.canvas.width / 2),
+         35
+      );
+
+      // Change the font size for the center score value
+      this.context.font = '40px Courier';
+
+      // Draw the current round number
+      this.context.fillText(
+         rounds[Pong.round] ? rounds[Pong.round] : rounds[Pong.round - 1],
+         (this.canvas.width / 2),
+         100
+      );
+   },
+
+   loop: function () {
+      Pong.update();
+      Pong.draw();
+
+      // If the game is not over, draw the next frame.
+      if (!Pong.over)  requestAnimationFrame(Pong.loop);
+   },
+
+   listen: function () {
       
-
-
    }
 }
