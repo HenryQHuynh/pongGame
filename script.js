@@ -71,7 +71,7 @@ var Game = {
       Pong.context.fillStyle = this.color;
 
       // Creates the rectangular background, behind the start button
-      Pong.context.fillReact(
+      Pong.context.fillRect(
          Pong.canvas.width / 2 - 350,
          Pong.canvas.height / 2 - 48,
          700,
@@ -83,15 +83,15 @@ var Game = {
 
       // End Game menu
       Pong.context.fillText(text,
-         Pong.canvas.width / 2,
-         Pong.canvas.height / 2 + 15
-     );
+            Pong.canvas.width / 2,
+            Pong.canvas.height / 2 + 15
+        );
 
      setTimeout(function () {
-      Pong = Object.assign({}, Game);
-      Pong.initialize();
-  }, 3000);
-   },
+            Pong = Object.assign({}, Game);
+            Pong.initialize();
+        }, 3000);
+    },
 
    menu: function () {
       // Draw Pong objects in their current state
