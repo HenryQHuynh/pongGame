@@ -7,7 +7,7 @@ var DIRECTION = {
    RIGHT: 4
 };
 
-var rounds = [5, 5, 3, 3, 2];
+var rounds = [1, 1, 1, 1, 2];
 var colors = ['#1abc9c', '#2ecc71', '#3498db', '#8c52ff', '#9b59b6']
 
 // Ball (The cube acts as the pong ball)
@@ -90,7 +90,7 @@ var Game = {
      setTimeout(function () {
       Pong = Object.assign({}, Game);
       Pong.initialize();
-     }, 3000);
+  }, 3000);
    },
 
    menu: function () {
@@ -183,27 +183,28 @@ var Game = {
       }
    // Handle for the end of round transition.
    // Check to see which player won the round.
-   if (this.player.score === rounds[this.round]) {
-      // Check to see if there are any more rounds left in the game and display the victory screen if there are not.
-         if (!rounds[this.round + 1]) {
-            this.over = true;
-            setTimeout(function () { Pong.endGameMenu('Winner!'); }, 1000);
-         } else {
-               // If there is another round, reset all the values and increment the round number.
-               this.color = this._generateRoundColor();
-               this.player.score = this.ai.score = 0;
-               this.player.speed += 0.5;
-               this.ai.speed += 1;
-               this.ball.speed += 1;
-               this.round += 1;
+    if (this.player.score === rounds[this.round]) {
+            // Check to see if there are any more rounds/levels left and display the victory screen if
+            // there are not.
+            if (!rounds[this.round + 1]) {
+                this.over = true;
+                setTimeout(function () { Pong.endGameMenu('Winner!'); }, 1000);
+            } else {
+                // If there is another round, reset all the values and increment the round number.
+                this.color = this._generateRoundColor();
+                this.player.score = this.ai.score = 0;
+                this.player.speed += 0.5;
+                this.ai.speed += 1;
+                this.ball.speed += 1;
+                this.round += 1;
          }
       }
    // Check if the ai won the round.
    else if (this.ai.score === rounds[this.round]) {
-      this.over = true;
-      setTimeout(function () { Pong.endGameMenu('Game Over, Man!'); }, 1000);
-      }
-   },
+            this.over = true;
+            setTimeout(function () { Pong.endGameMenu('Game Over!'); }, 1000);
+        }
+    },
 
    // Draw the objects on the canvas element
    draw: function () {
@@ -268,13 +269,14 @@ var Game = {
       this.context.font = '100px Courier New';
       this.context.textAlign = 'center';
 
-      // Draw the players score (left) and ai score (right)
+      // Draw the players score (left)
       this.context.fillText(
          this.player.score.toString(),
          (this.canvas.width / 2) - 300,
          200
       );
 
+      // and ai score (right)
       this.context.fillText(
          this.ai.score.toString(),
          (this.canvas.width / 2) + 300,
@@ -286,71 +288,70 @@ var Game = {
 
       // Draw the winning score
       this.context.fillText(
-         'Round' + (Pong.round + 1),
-         (this.canvas.width / 2),
-         35
-      );
+            'Round ' + (Pong.round + 1),
+            (this.canvas.width / 2),
+            35
+        );
 
       // Change the font size for the center score value
       this.context.font = '40px Courier';
 
       // Draw the current round number
       this.context.fillText(
-         rounds[Pong.round] ? rounds[Pong.round] : rounds[Pong.round - 1],
-         (this.canvas.width / 2),
-         100
-      );
-   },
+            rounds[Pong.round] ? rounds[Pong.round] : rounds[Pong.round - 1],
+            (this.canvas.width / 2),
+            100
+        );
+    },
 
-   loop: function() {
-      Pong.update();
-      Pong.draw();
-
-      // If the game is not over, draw the next frame.
-      if (!Pong.over)  requestAnimationFrame(Pong.loop);
-   },
+   loop: function () {
+        Pong.update();
+        Pong.draw();
+ 
+        // If the game is not over, draw the next frame.
+        if (!Pong.over) requestAnimationFrame(Pong.loop);
+    },
 
    listen: function () {
-      document.addEventListener('keydown', function(key) {
-         // 'Press any key to begin' function and start the game.
-         if (Pong.running === false) {
-            Pong.running = true;
-            window.requestAnimationFrame(Pong.loop);
-         }
-
-         // Up Arrow and W key events.
-         if (key.keyCode === 38 || key.keyCode === 87) Pong.player.move = DIRECTION.UP;
-
-         // Down Arrow and S key events.
-         if (key.keyCode === 40 || key.keyCode === 83) Pong.player.move = DIRECTION.DOWN;
-      });
-
-      // Stop player from moving when no keys are pressed.
-      document.addEventListener('keyup', function (key) {Pong.player.move = DIRECTION.IDLE;
-      });
-   },
-
-   // Reset the ball, players turn, and set a delay before the next round.
-   _resetTurn: function(victor, loser) {
-      this.ball = Ball.new.call(this, this.ball.speed);
-      this.turn = loser;
-      this.timer = (new Date()).getTime();
-
-      victor.score++;
-   },
-
-   // Have delay after each turn.
-   _turnDelayIsOver: function() {
-      return ((new Date()).getTime() - this.timer >= 1000);
-   },
-
-   // Generate random color for each level background
-   _generateRoundColor: function() {
-      var newColor = colors[Math.floor(Math.random() * colors.length)];
-      if (newColor === this.color) return Pong._generateRoundColor();
-      return newColor;
-   }
+        document.addEventListener('keydown', function (key) {
+            // Handle the 'Press any key to begin' function and start the game.
+            if (Pong.running === false) {
+                Pong.running = true;
+                window.requestAnimationFrame(Pong.loop);
+            }
+ 
+            // Handle up arrow and w key events
+            if (key.keyCode === 38 || key.keyCode === 87) Pong.player.move = DIRECTION.UP;
+ 
+            // Handle down arrow and s key events
+            if (key.keyCode === 40 || key.keyCode === 83) Pong.player.move = DIRECTION.DOWN;
+        });
+ 
+        // Stop the player from moving when there are no keys being pressed.
+        document.addEventListener('keyup', function (key) { Pong.player.move = DIRECTION.IDLE; });
+    },
+ 
+    // Reset the ball location, the player turns and set a delay before the next round begins.
+    _resetTurn: function(victor, loser) {
+        this.ball = Ball.new.call(this, this.ball.speed);
+        this.turn = loser;
+        this.timer = (new Date()).getTime();
+ 
+        victor.score++;
+    },
+ 
+    // Wait for a delay to have passed after each turn.
+    _turnDelayIsOver: function() {
+        return ((new Date()).getTime() - this.timer >= 1000);
+    },
+ 
+    // Select a random color as the background of each level/round.
+    _generateRoundColor: function () {
+        var newColor = colors[Math.floor(Math.random() * colors.length)];
+        if (newColor === this.color) return Pong._generateRoundColor();
+        return newColor;
+    }
 };
-
+ 
 var Pong = Object.assign({}, Game);
 Pong.initialize();
