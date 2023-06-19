@@ -6,8 +6,9 @@ var DIRECTION = {
    LEFT: 3,
    RIGHT: 4
 };
+const audio = document.getElementById('myAudio');
 
-var rounds = [1, 1, 1, 1, 2];
+var rounds = [5, 4, 3, 3, 2];
 var colors = ['#1abc9c', '#2ecc71', '#3498db', '#8c52ff', '#9b59b6']
 
 // Ball (The cube acts as the pong ball)
@@ -329,7 +330,11 @@ var Game = {
  
         // Stop the player from moving when there are no keys being pressed.
         document.addEventListener('keyup', function (key) { Pong.player.move = DIRECTION.IDLE; });
+
+        audio.play();
     },
+
+   //  listen: 
  
     // Reset the ball location, the player turns and set a delay before the next round begins.
     _resetTurn: function(victor, loser) {
