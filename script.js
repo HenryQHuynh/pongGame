@@ -6,7 +6,30 @@ var DIRECTION = {
    LEFT: 3,
    RIGHT: 4
 };
-const audio = document.getElementById('myAudio');
+class AudioController {
+   constructor() {
+      this.bgMusic = new Audio('asset/audio/chill-abstract-intention-12099.mp3');
+      this.gameOverSound = new Audio('asset/audio/gameOver.wav');
+      this.victorySound = new Audio('asset/audio/success-48018.mp3')
+      this.bgMusic.volume = 0.75;
+      this.bgMusic.loop = true;
+   }
+   startMusic() {
+      this.bgMusic.play();
+   }
+   stopMusic() {
+      this.bgMusic.pause();
+      this.bgMusic.currentTime = 0;
+   }
+   gameOver() {
+      this.stopMusic();
+      this.gameOverSound.play();
+   }
+   victory() {
+      this.stopMusic();
+      this.victorySound.play();
+   }
+}
 
 var rounds = [5, 4, 3, 3, 2];
 var colors = ['#1abc9c', '#2ecc71', '#3498db', '#8c52ff', '#9b59b6']
@@ -42,6 +65,8 @@ var Ai = {
 };
 
 var Game = {
+   audioController: new AudioController(),
+
    initialize: function () {
       this.canvas = document.querySelector('canvas');
       this.context = this.canvas.getContext('2d');
@@ -66,10 +91,14 @@ var Game = {
       Pong.listen();
    },
 
-   endGameMenu: function (text) {
+   endGameMenu: function (text) {   
       // This changes the canvas color and font size
       Pong.context.font = '45px Courier New';
       Pong.context.fillStyle = this.color;
+
+      // Stop the music
+      // Pong.audioController.gameOver();
+
 
       // Creates the rectangular background, behind the start button
       Pong.context.fillRect(
@@ -189,7 +218,10 @@ var Game = {
             // there are not.
             if (!rounds[this.round + 1]) {
                 this.over = true;
-                setTimeout(function () { Pong.endGameMenu('Winner!'); }, 1000);
+                setTimeout(function () { 
+                  Pong.endGameMenu('Winner!');
+                  Pong.audioController.victory() 
+               }, 1000);
             } else {
                 // If there is another round, reset all the values and increment the round number.
                 this.color = this._generateRoundColor();
@@ -203,7 +235,10 @@ var Game = {
    // Check if the ai won the round.
    else if (this.ai.score === rounds[this.round]) {
             this.over = true;
-            setTimeout(function () { Pong.endGameMenu('Game Over!'); }, 1000);
+            setTimeout(
+               function () { Pong.endGameMenu('Game Over!'); 
+               Pong.audioController.gameOver()
+            }, 1000);
         }
     },
 
@@ -319,6 +354,7 @@ var Game = {
             if (Pong.running === false) {
                 Pong.running = true;
                 window.requestAnimationFrame(Pong.loop);
+                Pong.audioController.startMusic();
             }
  
             // Handle up arrow and w key events
@@ -331,7 +367,6 @@ var Game = {
         // Stop the player from moving when there are no keys being pressed.
         document.addEventListener('keyup', function (key) { Pong.player.move = DIRECTION.IDLE; });
 
-        audio.play();
     },
 
    //  listen: 
